@@ -1,0 +1,33 @@
+specVersion: 0.2.0
+name: lesson5
+version: 1.0.0
+description: get data from moombeam chain by subquery
+repository: ''
+schema:
+  file: ./schema.graphql
+network:
+  endpoint: wss://moonriver.api.onfinality.io/public-ws
+  genesisHash: '0x401a1f9dca3da46f5c4091016c8a2f26dcea05865116b286f60f668207d1474b'
+  dictionary: https://sz.api.subquery.network/sq/subquery/moonvriver-dictionary
+  chainTypes:
+    file: "./dist/chaintypes.js"
+dataSources:
+  - kind: substrate/Moonbeam
+    startBlock: 562683
+    processor:
+      file: './node_modules/@subql/contract-processors/dist/moonbeam.js'
+      options:
+        # Must be a key of assets
+        abi: erc20
+        address: '0x6bd193ee6d2104f14f94e2ca6efefae561a4334b'
+    assets:
+      erc20:
+        file: './erc20.abi.json'
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: erc20Transfer
+          kind: substrate/MoonbeamEvent
+          filter:
+            topics:
+              - Transfer(address indexed from,address indexed to,uint256 value)
